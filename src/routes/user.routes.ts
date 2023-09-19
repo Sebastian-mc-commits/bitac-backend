@@ -1,13 +1,13 @@
-import { Router, NextFunction, Request, Response } from "express";
+import { Router } from "express";
 import { UserController } from "../controllers";
+import { AuthenticationMiddleware } from "../middlewares";
+import { asyncHandler } from "../utils/functions";
 
-const router = Router()
+const router = Router();
 
+router.use(AuthenticationMiddleware.isAuthenticated);
 
-const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => (req: Request, res: Response, next: NextFunction) => {
-  Promise.resolve(fn(req, res, next)).catch(next)
-}
+router.post("/createUser", asyncHandler(UserController.createUser));
+router.get("/getUserByCredentials", asyncHandler(UserController.getUserByCredentials));
 
-router.post("/createUser", UserController.createUser)
-
-export default router
+export default router;

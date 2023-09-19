@@ -3,6 +3,11 @@ export const isString = (value: any) => typeof value === "string"
 export const isNull = (value: any): boolean => {
 
   let isNull = false
+
+  if (value === null) {
+    return true
+  }
+
   switch (typeof value) {
     case "string": {
       isNull = value === ""
@@ -15,7 +20,7 @@ export const isNull = (value: any): boolean => {
     }
 
     case "object": {
-      isNull = Object.values(value).length === 0 || Object.values(value).some(v => Boolean(v))
+      isNull = Object.values(value).length === 0 || Object.values(value).some(v => !Boolean(v))
       break
     }
 

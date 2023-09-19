@@ -1,22 +1,39 @@
 import { Response, Request } from "express";
-import { ErrorHandling } from "../utils/functions";
+import { ErrorHandling, signPayload } from "../utils/functions";
 import { Reducer } from "../utils/classes";
 import { IUser } from "../types";
+import { UserService } from "../services";
 
 class User extends Reducer {
 
-  private model
+  private service
 
   constructor() {
     super()
-    this.model = "model"
+    this.service = UserService
   }
 
-  createUser = (req: Request, res: Response): Response => {
+  createUser = async (req: Request, res: Response): Promise<Response> => {
 
     this.validateInputValues<IUser>(["email", "name", "password"], req.body)
 
-    return res.json(req.body)
+    const user = await this.service.createUser(req.body)
+
+    return res.json({ user, token: signPayload(user) })
+  }
+
+  getUserByCredentials = async (req: Request, res: Response): Promise<Response> => {
+
+    this.validateInputValues<Omit<IUser, "name">>(["email", "password"], req.body)
+
+    const user = await this.service.getUserByCredentials(req.body)
+
+    return res.json({
+      user, token: signPayload({
+        email: user.email,
+        name: user.name
+      })
+    })
   }
 }
 

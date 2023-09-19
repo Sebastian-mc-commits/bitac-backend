@@ -55,7 +55,8 @@ export default class {
         }
         case "password": {
           if (!isString(value) || !passwordRegex.test(value as string)) {
-            message = "El nombre debe ser mayor a 2 caracteres"
+            message = `La contraseña debe tener al menos: 1 caracter especial, 1 numero, 
+            1 letra mayuscula y ser mayor a 8 caracteres`
             hasError = true
           }
 

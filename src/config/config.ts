@@ -2,8 +2,10 @@ import { config as dotenvConfig } from "dotenv";
 
 dotenvConfig()
 
-const { PORT } = process.env
+const { PORT, JWT_SECRET, MONGO_URI } = process.env
 
 export default {
-  PORT
+  PORT,
+  JWT_SECRET,
+  MONGO_URI
 }

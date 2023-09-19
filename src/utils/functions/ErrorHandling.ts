@@ -8,11 +8,11 @@ export default <Instance>(object: any): Instance => {
 
     object[methodName] = async (...params: any[]) => {
       try {
-        return await Promise.resolve(method.call(this, ...params))
+        return await Promise.resolve(method.apply(this, params))
       }
       catch (error) {
         const [req, res, next] = params
-        next(error)
+        return next(error)
       }
     }
   })
