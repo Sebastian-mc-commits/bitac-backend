@@ -11,8 +11,14 @@ export default <Instance>(object: any): Instance => {
         return await Promise.resolve(method.apply(this, params))
       }
       catch (error) {
-        const [req, res, next] = params
-        return next(error)
+        for (const fn of params) {
+          if (typeof fn === "function") {
+            return fn(error)
+          }
+        }
+
+        // const [req, res, next] = params
+        // return next(error)
       }
     }
   })

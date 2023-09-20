@@ -1,8 +1,12 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import { IUser } from "../types";
 import { getHashedPassword } from "../utils/functions";
 
-const schema = new Schema<IUser>({
+export interface IUserWithTransferredData extends IUser {
+    transferredData: unknown
+}
+
+const schema = new Schema<IUserWithTransferredData>({
     email: {
         type: String,
         required: true,
@@ -17,6 +21,43 @@ const schema = new Schema<IUser>({
     password: {
         type: String,
         required: true,
+    },
+
+    transferredData: {
+        type: {
+            cities: [
+                {
+                    type: Types.ObjectId,
+                    ref: "City",
+                    unique: true
+                }
+            ],
+
+            senders: [
+                {
+                    type: Types.ObjectId,
+                    ref: "Sender",
+                    unique: true
+                }
+            ],
+
+            transporters: [
+                {
+                    type: Types.ObjectId,
+                    ref: "Transporter",
+                    unique: true
+                }
+            ],
+
+            destinations: [
+                {
+                    type: Types.ObjectId,
+                    ref: "Destination",
+                    unique: true
+                }
+            ]
+        },
+        required: false
     }
 })
 

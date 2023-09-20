@@ -24,12 +24,27 @@ export default class {
         })
       }
     }
-    
+
     return true
   }
-  
-  protected handleValidation (fn: () => boolean) {
+
+  protected contains<T>(neededValues: (keyof T)[], object: T): boolean {
+
+    let isValid = true
+    for (const key of neededValues) {
+      const value = object[key]
+
+      if (isNull(value)) {
+        isValid = false
+        break
+      }
+    }
+
+    return isValid
+  }
+  protected handleValidation(fn: () => boolean) {
     if (!fn()) {
+      console.log("Error coming :(")
       throw new ErrorHandler({
         customMessage: "Algo fue mal, intenta nuevamente",
         httpStatusCode: ErrorCodes.UNPROCESSABLE_ENTITY,
