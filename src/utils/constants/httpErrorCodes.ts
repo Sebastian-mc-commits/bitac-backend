@@ -4,7 +4,8 @@ enum ErrorCodes {
   SERVER_ERROR = 500,
   UNPROCESSABLE_ENTITY = 422,
   CONFLICT = 409,
-  NOT_FOUND = 404
+  NOT_FOUND = 404,
+  UNAUTORIZED = 401
 }
 
 export default ErrorCodes

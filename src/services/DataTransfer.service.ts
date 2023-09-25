@@ -81,11 +81,6 @@ export default new class {
       else if (useUserId) {
         const user = await this.userService.getUser(req)
 
-        if (user === null || isNull(user)) {
-          await session.abortTransaction()
-          return false
-        }
-
         await UserModel.updateOne({ email: user?.email as string }, {
           $set: {
             transferredData
@@ -97,10 +92,6 @@ export default new class {
 
       return true
     })
-
-    // if (isNull(isTransactionValid)) return {
-    //   isValid: false
-    // }
 
     return {
       isValid: Boolean(isTransactionValid),
@@ -115,7 +106,6 @@ export default new class {
     if (useCode) {
       data = await DataTransferredModel.findOne({ code })
 
-      console.log(data)
       //       if (!isNull(data)) {
       //         const { transferredIn, transferredData } = data as ITransferredDataWithTransferredData
       //         const { cities, destinations, senders, transporters } = transferredData as ExpectedDataTransfer
@@ -132,12 +122,8 @@ export default new class {
     }
 
     else if (useUserId) {
-
       const user = await this.userService.getUser(req)
-
-      if (user !== null || !isNull(user)) {
-        data = await UserModel.findOne({ email: user?.email })
-      }
+      data = await UserModel.findOne({ email: user?.email })
     }
     return data
   }
