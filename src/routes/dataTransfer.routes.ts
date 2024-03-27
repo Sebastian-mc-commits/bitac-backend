@@ -6,7 +6,8 @@ import { AuthenticationMiddleware, DataTransferMiddleware } from "../middlewares
 
 const router = Router()
 
-router.post("/generatesCode", DataTransferMiddleware.isCodeSet, asyncHandler(DataTransferController.onInsertData(false)))
+router.post("/generatesCode", asyncHandler(DataTransferController.onInsertData(false)))
+// router.post("/generatesCode", DataTransferMiddleware.isCodeSet, asyncHandler(DataTransferController.onInsertData(false)))
 router.post("/storeDataByUserCredentials",
     asyncHandler(AuthenticationMiddleware.isNotAuthenticated),
     DataTransferMiddleware.isUserSet,
