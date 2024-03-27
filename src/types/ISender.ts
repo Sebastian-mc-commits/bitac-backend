@@ -4,6 +4,6 @@ export default interface ISender {
     nit: string;
     cityId: number;
     transporterId: number;
-    phoneNumber: number;
+    phoneNumber: string;
     locationDescription: string;
 }

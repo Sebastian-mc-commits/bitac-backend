@@ -17,7 +17,7 @@ const schema = new Schema<IDestinationWithId>({
 
   phoneNumber: {
     required: true,
-    type: Number
+    type: String
   },
 
   locationDescription: {
@@ -32,12 +32,12 @@ const schema = new Schema<IDestinationWithId>({
 
   senderId: {
     required: true,
-    type: Number
+    type: String
   },
 
   id: {
     type: Number,
-    required: true
+    required: false
   }
 })
 

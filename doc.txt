@@ -1,0 +1,48 @@
+/api
+### USER:
+/user
+
+POST
+/createUser
+
+{
+    email,
+    password,
+    name
+}
+
+GET
+/getUserByCredentials
+
+{
+    email,
+    password
+}
+
+### DATA TRANSFER
+/dataTransfer
+
+POST
+/generatesCode
+
+{
+    cities,
+    destinations,
+    senders,
+    transporters
+}
+
+POST
+/storeDataByUserCredentials
+"authorization" header
+
+DELETE
+/removeCode/:code
+
+GET
+/obtainTransferredDataByCode
+"code" req
+
+GET
+/obtainTransferredDataByUser
+"authorization" header

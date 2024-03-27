@@ -1,7 +1,7 @@
 import { ClientSession, startSession } from "mongoose"
 
 export interface ITypeWithIdAndUserOps {
-  id: number
+  id?: number | string
 }
 
 export const useTransaction = async <T>(callback: (transaction: ClientSession) => Promise<unknown>): Promise<T | null> => {
@@ -12,11 +12,11 @@ export const useTransaction = async <T>(callback: (transaction: ClientSession) =
   try {
 
     session.startTransaction()
-    const callbackReturnedData = callback(session)
+    const callbackReturnedData = await callback(session)
 
     endValue = callbackReturnedData as T
   }
-  catch {
+  catch (e) {
     await session.abortTransaction()
     endValue = null
   }

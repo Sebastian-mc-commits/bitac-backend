@@ -4,7 +4,7 @@ export const isNull = (value: any): boolean => {
 
   let isNull = false
 
-  if (value === null) {
+  if (value === null || value === undefined) {
     return true
   }
 

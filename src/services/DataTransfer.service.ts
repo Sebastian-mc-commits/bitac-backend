@@ -4,6 +4,8 @@ import UserService from "./User.service";
 import { Request } from "express";
 import { getObjectIds, isNull } from "../utils/functions";
 import { CityModel, DataTransferredModel, DestinationModel, ITransferredDataWithTransferredData, IUserWithTransferredData, SenderModel, TransporterModel, UserModel, useTransaction } from "../models";
+import TransferredDataModel from "../models/TransferredData.model";
+import { ITransferredDataObject } from "../types/ITransferredData";
 
 export type ExpectedDataTransfer = {
   cities: ICity[];
@@ -105,6 +107,11 @@ export default new class {
 
     if (useCode) {
       data = await DataTransferredModel.findOne({ code })
+        .populate("transferredData.senders")
+        .populate("transferredData.destinations")
+        .populate("transferredData.cities")
+        .populate("transferredData.transporters")
+
 
       //       if (!isNull(data)) {
       //         const { transferredIn, transferredData } = data as ITransferredDataWithTransferredData
@@ -150,11 +157,21 @@ export default new class {
 
   onRemoveData = async (req: Request, { useCode, useUserId, code }: Omit<OnStoreDataProps<unknown>, "data">): Promise<OnReturnServiceType<unknown>> => {
 
-    let requiredRemoveType: OnSelectStoreType = {}
+    let ids: ITransferredDataObject
+    let callback: () => Promise<void>
 
     if (useCode) {
-      requiredRemoveType = {
-        code
+      const transferredDataModel = await TransferredDataModel.findOne({ code })
+
+      ids = {
+        cities: transferredDataModel?.transferredData.cities!,
+        senders: transferredDataModel?.transferredData.senders!,
+        destinations: transferredDataModel?.transferredData.destinations!,
+        transporters: transferredDataModel?.transferredData.transporters!,
+      }
+
+      callback = async () => {
+        await TransferredDataModel.deleteOne({ code })
       }
     }
 
@@ -167,23 +184,69 @@ export default new class {
         }
       }
 
-      requiredRemoveType = {
-        ownerOfDataTransfer: user._id
+      const userData = await UserModel.findById(user._id);
+
+      ids = {
+        cities: userData?.transferredData.cities!,
+        senders: userData?.transferredData.senders!,
+        destinations: userData?.transferredData.destinations!,
+        transporters: userData?.transferredData.transporters!,
+      }
+
+      callback = async () => {
+
+        userData!.transferredData.cities = []
+        userData!.transferredData.destinations = []
+        userData!.transferredData.senders = []
+        userData!.transferredData.transporters = []
+
+        await userData?.save()
       }
     }
 
-    const isTransactionValid = await useTransaction(async () => {
-      return await Promise.all([
-        CityModel.deleteMany(requiredRemoveType),
-        TransporterModel.deleteMany(requiredRemoveType),
-        SenderModel.deleteMany(requiredRemoveType),
-        DestinationModel.deleteMany(requiredRemoveType)
-      ])
+    const isTransactionValid = await useTransaction<OnReturnServiceType<unknown>>(async (transaction) => {
+
+      try {
+        const data = await Promise.all([
+          SenderModel.deleteMany({
+            _id: {
+              $in: ids.senders
+            }
+          }),
+          DestinationModel.deleteMany({
+            _id: {
+              $in: ids.destinations
+            }
+          }),
+          CityModel.deleteMany({
+            _id: {
+              $in: ids.cities
+            }
+          }),
+          TransporterModel.deleteMany({
+            _id: {
+              $in: ids.transporters
+            }
+          }),
+          await callback()
+        ])
+
+        await transaction.commitTransaction()
+
+        return {
+          data,
+          isValid: true
+        }
+      }
+      catch (e) {
+        await transaction.abortTransaction()
+        return {
+          data: [],
+          isValid: false
+        }
+      }
     })
 
-    return {
-      isValid: !isNull(isTransactionValid),
-      data: isTransactionValid
-    }
+    return isTransactionValid as OnReturnServiceType<unknown>
   }
 }

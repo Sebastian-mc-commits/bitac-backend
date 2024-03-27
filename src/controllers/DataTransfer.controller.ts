@@ -132,4 +132,5 @@ class DataTransfer_ extends Reducer {
 
 const Instance = new DataTransfer_()
 
-export default ErrorHandling<typeof Instance>(Instance)
+export default Instance
+// export default ErrorHandling<typeof Instance>(Instance)

@@ -1,8 +1,9 @@
 import { Schema, Types, model } from "mongoose";
 import { ITransferredData } from "../types";
+import { ITransferredDataObject } from "../types/ITransferredData";
 
 export interface ITransferredDataWithTransferredData extends ITransferredData {
-  transferredData: unknown
+  transferredData: ITransferredDataObject
 }
 
 const schema = new Schema<ITransferredDataWithTransferredData>({
@@ -22,7 +23,7 @@ const schema = new Schema<ITransferredDataWithTransferredData>({
       cities: [
         {
           type: Types.ObjectId,
-          ref: "City",
+          ref: "cities",
           unique: true
         }
       ],
@@ -30,7 +31,7 @@ const schema = new Schema<ITransferredDataWithTransferredData>({
       senders: [
         {
           type: Types.ObjectId,
-          ref: "Sender",
+          ref: "senders",
           unique: true
         }
       ],
@@ -38,7 +39,7 @@ const schema = new Schema<ITransferredDataWithTransferredData>({
       transporters: [
         {
           type: Types.ObjectId,
-          ref: "Transporter",
+          ref: "transporters",
           unique: true
         }
       ],
@@ -46,7 +47,7 @@ const schema = new Schema<ITransferredDataWithTransferredData>({
       destinations: [
         {
           type: Types.ObjectId,
-          ref: "Destination",
+          ref: "destinations",
           unique: true
         }
       ]

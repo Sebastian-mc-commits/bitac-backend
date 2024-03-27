@@ -44,7 +44,6 @@ export default class {
   }
   protected handleValidation(fn: () => boolean) {
     if (!fn()) {
-      console.log("Error coming :(")
       throw new ErrorHandler({
         customMessage: "Algo fue mal, intenta nuevamente",
         httpStatusCode: ErrorCodes.UNPROCESSABLE_ENTITY,

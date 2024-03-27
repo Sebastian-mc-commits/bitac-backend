@@ -1,9 +1,10 @@
 import { Schema, Types, model } from "mongoose";
 import { IUser } from "../types";
 import { getHashedPassword } from "../utils/functions";
+import { ITransferredDataObject } from "../types/ITransferredData";
 
 export interface IUserWithTransferredData extends IUser {
-    transferredData: unknown
+    transferredData: ITransferredDataObject
 }
 
 const schema = new Schema<IUserWithTransferredData>({

@@ -11,7 +11,8 @@ const errorMiddleware = (error: ErrorHandler | Error, _req: Request, res: Respon
       message: error.message
     })
   }
-  const {customMessage, httpStatusCode, message} = error as ErrorHandler
+  const { customMessage, httpStatusCode, message } = error as ErrorHandler
+
 
   return res.status(httpStatusCode).json({
     customMessage,

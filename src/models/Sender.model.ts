@@ -17,7 +17,7 @@ const schema = new Schema<ISenderWithId>({
 
   phoneNumber: {
     required: true,
-    type: Number
+    type: String
   },
 
   locationDescription: {
@@ -37,7 +37,7 @@ const schema = new Schema<ISenderWithId>({
 
   id: {
     type: Number,
-    required: true
+    required: false
   }
 })
 
